@@ -1,0 +1,12 @@
+## Como se fosse um local storage da web ##
+## Armazena chave:valor / informações rápidas para acessar entre telas ###
+
+
+Acesso a api pelo genymotion
+baseURL: 'http://10.0.3.2:3333'
+
+Utilizando dispositivo físico
+baseURL: 'http://IP_DO_SERVER:3333'
+
+Acessar com o localhost no android
+adb reverse tpc:3333 tcp:3333
