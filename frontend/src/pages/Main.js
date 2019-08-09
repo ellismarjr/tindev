@@ -7,6 +7,8 @@ import api from '../services/api'
 import logo from '../assets/logo.svg'
 import like from '../assets/like.svg'
 import dislike from '../assets/dislike.svg'
+import itsamatch from '../assets/itsamatch.png'
+import io from 'socket.io-client'
 
 // useEffect recebe dois parametros
 // 1º qual funçao quero executar
@@ -14,6 +16,7 @@ import dislike from '../assets/dislike.svg'
 
 export default function Main({ match }) {
   const [users, setUsers] = useState([])
+  const [matchDev, setMatchDev] = useState(null)
 
   useEffect(() => {
     async function loadUsers() {
@@ -26,6 +29,16 @@ export default function Main({ match }) {
     }
 
     loadUsers()
+  }, [match.params.id])
+
+  useEffect(() => {
+    const socket = io('https://ellismartindev.herokuapp.com/', {
+      query: { user: match.params.id }
+    })
+
+    socket.on('match', dev => {
+      setMatchDev(dev)
+    })
   }, [match.params.id])
 
   async function handleLike(id) {
@@ -46,7 +59,7 @@ export default function Main({ match }) {
   return (
     <div className="main-container">
       <Link to="/">
-      <img src={logo} alt="Tindev" />     
+        <img src={logo} alt="Tindev" />
       </Link>
       {users.length > 0 ? (
         <ul>
@@ -70,10 +83,19 @@ export default function Main({ match }) {
           ))}
         </ul>
       ) : (
-        <div className="empty">
-          Acabou :(
+          <div className="empty"> Acabou :( </div>
+        )}
+
+      {matchDev && (
+        <div className="match-container">
+          <img src={itsamatch} alt="It's a match" />
+
+          <img className="avatar" src={matchDev.avatar} alt="" />
+          <strong>{matchDev.name}</strong>
+          <p>{matchDev.bio}</p>
+          <button type="button" onClick={() => setMatchDev(null)}>FECHAR</button>
         </div>
-      ) }
+      )}
     </div>
   )
 }
